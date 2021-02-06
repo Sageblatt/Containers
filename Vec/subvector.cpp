@@ -1,81 +1,80 @@
-struct subvector {
+class subvector
+{
+public:
+    subvector();//
+    bool push_back(int d);//
+    int pop_back();//
+    bool resize(unsigned int new_capacity);//
+    void shrink_to_fit();//
+    void clear();//
+    ~subvector();
+
+private:
     int *mas;
     unsigned int top;
     unsigned int capacity;
 };
 
-//Prototypes
-bool init(subvector *qv);//
-bool push_back(subvector *qv, int d);//
-int pop_back(subvector *qv);//
-bool resize(subvector *qv, unsigned int new_capacity);//
-void shrink_to_fit(subvector *qv);//
-void clear(subvector *qv);//
-void destructor(subvector *qv);
-//
-
-bool init(subvector *qv){
-    qv->capacity = 2000;
-    qv->top = 0;
-    qv->mas = new int[qv->capacity];
-    return 1;
+subvector::subvector()
+{
+    this->capacity = 2000;
+    this->top = 0;
+    this->mas = new int[this->capacity];
 }
 
-bool push_back(subvector *qv, int d){
-    if((qv->top) == qv->capacity){
-        unsigned int b = qv->capacity + 100;
-        resize(qv, b);
-    }
-    qv->mas[qv->top] = d;
-    qv->top++;
-    return 1;
-}
-
-bool resize(subvector *qv, unsigned int new_capacity){
-    if(new_capacity <= qv->capacity){
-        return 0;
-    }
-    unsigned int *a = &(qv->capacity);
+bool subvector::resize(unsigned int new_capacity){
+    unsigned int *a = &(this->capacity);
     int oldc = *a;
     *a = new_capacity;
     int *b = new int[*a];
     int i = 0;
     while(i < oldc){
-        b[i]=qv->mas[i];
+        b[i]=this->mas[i];
         i++;
     }
-    delete[] qv->mas;
-    qv->mas = b;
+    delete[] this->mas;
+    this->mas = b;
     return 1;
 }
 
-int pop_back(subvector *qv){
-    if(qv->top > 0){
-        qv->top--;
-        return qv->mas[qv->top];
+bool subvector::push_back(int d)
+{
+    if((this->top) == this->capacity){
+        unsigned int b = this->capacity + 100;//
+        this->resize(b);
+    }
+    this->mas[this->top] = d;
+    this->top++;
+    return 1;
+}
+
+int subvector::pop_back(){
+    if(this->top > 0){
+        this->top--;
+        return this->mas[this->top];
     }
     else{
         return 0;
     }
 }
 
-void shrink_to_fit(subvector *qv){
-    int * b = new int[qv->top];
-    for(int i = 0; i < qv->top; i++){
-        b[i] = qv->mas[i];
+void subvector::shrink_to_fit(){
+    int * b = new int[this->top];
+    for(int i = 0; i < this->top; i++){
+        b[i] = this->mas[i];
     }
-    delete[] qv->mas;
-    qv->mas = b;
-    qv->capacity = qv->top;
+    delete[] this->mas;
+    this->mas = b;
+    this->capacity = this->top;
 }
 
-void clear(subvector *qv){
-    qv->top = 0;
+void subvector::clear(){
+    this->top = 0;
 }
 
-void destructor(subvector *qv){
-    delete[] qv->mas;
-    qv->mas = nullptr;
-    qv->top = 0;
-    qv->capacity = 0;
+subvector::~subvector(){
+    delete[] this->mas;
+    this->mas = nullptr;
+    this->top = 0;
+    this->capacity = 0;
 }
