@@ -45,19 +45,19 @@ int main()
     cout << "Test sequence initialization: \t\t" << finish - start << endl;
 
     subvector sv;
-    init(&sv);
+    //sv.subvector();
 
 //----------- Test 000 Straight push_back
 
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        push_back(&sv, test_sequence[i]);
+        sv.push_back(test_sequence[i]);
     }
     finish = get_time();
 
-    for (int i = 0; i < n; i++)   //!!! This is a hack to bamboozle the O3 optimization.
-        sum_for_O3 += sv.mas[i];  // I might as well use it to test push/pop.
+    //for (int i = 0; i < n; i++)   //!!! This is a hack to bamboozle the O3 optimization.
+        sum_for_O3 = sv.sum();  // I might as well use it to test push/pop.
 
     cout << "000 Straight push_back: \t\t" << finish - start << endl;
     total += finish - start;
@@ -67,13 +67,13 @@ int main()
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        sum_check += pop_back(&sv);
+        sum_check += sv.pop_back();
     }
     finish = get_time();
 
     if (sum_check != sum_for_O3)
     {
-        cout <<endl <<"--- !!! Failed push/pop consistency !!! ---" << endl;
+        cout <<endl <<"--- !!! Failed push/pop consistency !!! ---"<< sum_check << endl << sum_for_O3;
         return 0;
     }
 
@@ -85,12 +85,12 @@ int main()
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        resize(&sv, i);
+        sv.resize(i);
     }
     finish = get_time();
 
-    shrink_to_fit(&sv);
-    if (sv.capacity)
+    sv.shrink_to_fit();
+    if (sv.capacity_check())
     {
         cout <<endl <<"--- !!! Failed resize/shrink consistency !!! ---" << endl;
         return 0;
@@ -106,20 +106,20 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_eq[i])
-            push_back(&sv, test_sequence[i]);
+            sv.push_back(test_sequence[i]);
         else
-            sum_for_O3 += pop_back(&sv);
+            sum_for_O3 += sv.pop_back();
     }
     finish = get_time();
 
-    clear(&sv);
-    shrink_to_fit(&sv);
-    if (sv.top)
+    sv.clear();
+    sv.shrink_to_fit();
+    if (sv.top_check())
     {
         cout <<endl <<"--- !!! Falied clear !!! ---" << endl;
         return 0;
     }
-    if (sv.capacity)
+    if (sv.capacity_check())
     {
         cout <<endl <<"--- !!! Falied shrink_to_fit !!! ---" << endl;
         return 0;
@@ -135,14 +135,14 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_push[i])
-            push_back(&sv, test_sequence[i]);
+            sv.push_back(test_sequence[i]);
         else
-            sum_for_O3 += pop_back(&sv);
+            sum_for_O3 += sv.pop_back();
     }
     finish = get_time();
 
-    clear(&sv);
-    shrink_to_fit(&sv);
+    sv.clear();
+    sv.shrink_to_fit();
 
     cout << "004 Random pop/push more push: \t\t" << finish - start << "\t\t" << sum_for_O3 << endl;
     total += finish - start;
@@ -154,9 +154,9 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_pushpush[i])
-            push_back(&sv, test_sequence[i]);
+            sv.push_back(test_sequence[i]);
         else
-            sum_for_O3 += pop_back(&sv);
+            sum_for_O3 += sv.pop_back();
     }
     finish = get_time();
 
@@ -164,7 +164,7 @@ int main()
     total += finish - start;
 
 //----------- End of tests
-    destructor(&sv);
+    sv.~subvector();
     cout << "-----------" << endl <<"Alltests finished, total time: \t" << total << endl;
 
     delete[] test_sequence;

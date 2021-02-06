@@ -1,3 +1,6 @@
+#include <iostream>
+using namespace std;
+
 class subvector
 {
 public:
@@ -7,6 +10,9 @@ public:
     bool resize(unsigned int new_capacity);//
     void shrink_to_fit();//
     void clear();//
+    int sum();
+    int capacity_check();
+    int top_check();
     ~subvector();
 
 private:
@@ -23,6 +29,9 @@ subvector::subvector()
 }
 
 bool subvector::resize(unsigned int new_capacity){
+    if(new_capacity <= this->capacity){
+        return 0;
+    }
     unsigned int *a = &(this->capacity);
     int oldc = *a;
     *a = new_capacity;
@@ -72,9 +81,43 @@ void subvector::clear(){
     this->top = 0;
 }
 
+int subvector::sum()
+{
+    long long int s = 0;
+    for(int i = 0; i < this->top; i++)
+    {
+        s += this->mas[i];
+    }
+    return s;
+}
+
 subvector::~subvector(){
     delete[] this->mas;
     this->mas = nullptr;
     this->top = 0;
     this->capacity = 0;
 }
+
+int subvector::capacity_check()
+{
+    return this->capacity;
+}
+
+int subvector::top_check()
+{
+    return this->top;
+}
+
+/*int main()
+{
+    subvector qwer;
+    int i;
+    for(i = 0; i <= 10; i++)
+    {
+        qwer.push_back(i);
+    }
+    cout << qwer.sum() <<  endl;
+    cout << qwer.top_check() << endl;
+    cout << qwer.capacity_check();
+}*/
+
