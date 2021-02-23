@@ -53,15 +53,14 @@ int main()
 
     cout << "Test sequence initialization: \t\t\t\t" << finish - start << endl;
 
-    subforwardlist *sv;
-    init(&sv);
+    sublist sv;
 
 //----------- Test 000 Straight push_back
 
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        push_back(&sv, test_sequence[i]);
+        sv.push_back(test_sequence[i]);
     }
     finish = get_time();
 
@@ -73,7 +72,7 @@ int main()
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        if (pop_forward(&sv) != test_sequence[i])
+        if (sv.pop_forward() != test_sequence[i])
         {
             cout <<endl <<"--- !!! Failed push/pop consistency !!! ---" << endl;
             return 0;
@@ -81,7 +80,7 @@ int main()
     }
     finish = get_time();
 
-    if (size(&sv))
+    if (sv.size())
     {
         cout <<endl <<"--- !!! Failed push/pop consistency, some elememts stuck !!! ---" << endl;
         return 0;
@@ -95,7 +94,7 @@ int main()
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        push_forward(&sv, test_sequence[i]);
+        sv.push_forward(test_sequence[i]);
     }
     finish = get_time();
 
@@ -107,7 +106,7 @@ int main()
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        if (pop_back(&sv) != test_sequence[i])
+        if (sv.pop_back() != test_sequence[i])
         {
             cout <<endl <<"--- !!! Failed push/pop consistency !!! ---" << endl;
             return 0;
@@ -115,9 +114,9 @@ int main()
     }
     finish = get_time();
 
-    if (size(&sv))
+    if (sv.size())
     {
-        cout <<endl <<"--- !!! Failed push/pop consistency, some elememts stuck !!! ---" << endl;
+        cout << endl <<"--- !!! Failed push/pop consistency, some elememts stuck !!! ---" << endl;
         return 0;
     }
 
@@ -128,17 +127,17 @@ int main()
 
     for (int i = 0; i < n; i++)
     {
-        push_back(&sv, test_sequence[i]);
+        sv.push_back(test_sequence[i]);
     }
 
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        push_where(&sv, push_sequence[i], test_sequence[i]);
+        sv.push_where(push_sequence[i], test_sequence[i]);
     }
     finish = get_time();
 
-    if (size(&sv) != 2 * n)
+    if (sv.size() != 2 * n)
     {
         cout <<endl <<"--- !!! Failed push/pop consistency, wrong elements number !!! ---" << endl;
         return 0;
@@ -147,10 +146,10 @@ int main()
     ongoing_sum = 0;
     for (int i = 0; i < 2 * n; i++)
     {
-        ongoing_sum += pop_back(&sv);
+        ongoing_sum += sv.pop_back();
     }
 
-    if (size(&sv))
+    if (sv.size())
     {
         cout <<endl <<"--- !!! Failed push/pop consistency, some elememts stuck !!! ---" << endl;
         return 0;
@@ -169,26 +168,26 @@ int main()
 
     for (int i = 0; i < 2 * n; i++)
     {
-        push_back(&sv, test_sequence[i % n]);
+        sv.push_back(test_sequence[i % n]);
     }
 
     sum_for_O3 = 0;
     start = get_time();
     for (int i = 0; i < n; i++)
     {
-        sum_for_O3 += erase_where(&sv, pop_sequence[i]);
+        sum_for_O3 += sv.erase_where(pop_sequence[i]);
     }
     finish = get_time();
 
-    if (size(&sv) != n)
+    if (sv.size() != n)
     {
         cout <<endl <<"--- !!! Failed push/pop consistency, wrong elements number !!! ---" << endl;
         return 0;
     }
 
-    clear(&sv);
+    sv.clear();
 
-    if (size(&sv))
+    if (sv.size())
     {
         cout <<endl <<"--- !!! Clear works wrongly !!! ---" << endl;
         return 0;
@@ -205,13 +204,13 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_eq[i])
-            push_back(&sv, test_sequence[i]);
+            sv.push_back(test_sequence[i]);
         else
-            sum_for_O3 += pop_back(&sv);
+            sum_for_O3 += sv.pop_back();
     }
     finish = get_time();
 
-    clear(&sv);
+    sv.clear();
 
     cout << "006 Random pop/push back equal amount: \t\t\t" << finish - start << "\t\t" << sum_for_O3 << endl;
     total += finish - start;
@@ -223,13 +222,13 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_push[i])
-            push_back(&sv, test_sequence[i]);
+            sv.push_back(test_sequence[i]);
         else
-            sum_for_O3 += pop_back(&sv);
+            sum_for_O3 += sv.pop_back();
     }
     finish = get_time();
 
-    clear(&sv);
+    sv.clear();
 
     cout << "007 Random pop/push back more push: \t\t\t" << finish - start << "\t\t" << sum_for_O3 << endl;
     total += finish - start;
@@ -241,13 +240,13 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_pushpush[i])
-            push_back(&sv, test_sequence[i]);
+            sv.push_back(test_sequence[i]);
         else
-            sum_for_O3 += pop_back(&sv);
+            sum_for_O3 += sv.pop_back();
     }
     finish = get_time();
 
-    clear(&sv);
+    sv.clear();
 
     cout << "008 Random pop/push back much more push: \t\t" << finish - start <<"\t\t" << sum_for_O3 << endl;
     total += finish - start;
@@ -259,13 +258,13 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_eq[i])
-            push_forward(&sv, test_sequence[i]);
+            sv.push_forward(test_sequence[i]);
         else
-            sum_for_O3 += pop_forward(&sv);
+            sum_for_O3 += sv.pop_forward();
     }
     finish = get_time();
 
-    clear(&sv);
+    sv.clear();
 
     cout << "009 Random pop/push forward equal amount: \t\t" << finish - start << "\t\t" << sum_for_O3 << endl;
     total += finish - start;
@@ -277,13 +276,13 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_push[i])
-            push_forward(&sv, test_sequence[i]);
+            sv.push_forward(test_sequence[i]);
         else
-            sum_for_O3 += pop_forward(&sv);
+            sum_for_O3 += sv.pop_forward();
     }
     finish = get_time();
 
-    clear(&sv);
+    sv.clear();
 
     cout << "010 Random pop/push forward more push: \t\t\t" << finish - start << "\t\t" << sum_for_O3 << endl;
     total += finish - start;
@@ -295,13 +294,13 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (pop_push_sequence_pushpush[i])
-            push_forward(&sv, test_sequence[i]);
+            sv.push_forward(test_sequence[i]);
         else
-            sum_for_O3 += pop_forward(&sv);
+            sum_for_O3 += sv.pop_forward();
     }
     finish = get_time();
 
-    clear(&sv);
+    sv.clear();
 
     cout << "011 Random pop/push forward much more push: \t\t" << finish - start <<"\t\t" << sum_for_O3 << endl;
     total += finish - start;
@@ -313,18 +312,18 @@ int main()
     for (int i = 0; i < n; i++)
     {
         if (four_ways_test[i] == 0)
-            push_back(&sv, test_sequence[i]);
+            sv.push_back(test_sequence[i]);
         else if (four_ways_test[i] == 1)
-            sum_for_O3 += pop_back(&sv);
+            sum_for_O3 += sv.pop_back();
         else if (four_ways_test[i] == 2)
-            push_forward(&sv, test_sequence[i]);
+            sv.push_forward(test_sequence[i]);
         else
-            sum_for_O3 += pop_forward(&sv);
+            sum_for_O3 += sv.pop_forward();
 
     }
     finish = get_time();
 
-    clear(&sv);
+    sv.clear();
 
     cout << "012 Random pop/push four ways: \t\t\t\t" << finish - start << "\t\t" << sum_for_O3 << endl;
     total += finish - start;

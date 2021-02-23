@@ -2,39 +2,40 @@
 
 using namespace std;
 
-struct subforwardlist{
-    int data;
-    subforwardlist* next;
+class sublist{
+private:
+    struct subforwardlist{
+        int data;
+        subforwardlist* next;
+    };
+    subforwardlist** first;
+    subforwardlist * motion(subforwardlist * sfl){return sfl->next;}
+public:
+    sublist();//
+    bool push_back(int d);//
+    int pop_back();//
+    bool push_forward(int d);//
+    int pop_forward();//
+    bool push_where(unsigned int where, int d);//
+    bool erase_where(unsigned int where);//
+    unsigned int size();//
+    void clear();
+    ~sublist();
 };
 
-//Prototypes
-bool init(subforwardlist ** sfl2);//
-bool push_back(subforwardlist ** sfl2, int d);//
-int pop_back(subforwardlist ** sfl2);//
-bool push_forward(subforwardlist ** sfl, int d);//
-int pop_forward(subforwardlist ** sfl);//
-bool push_where(subforwardlist ** sfl2, unsigned int where, int d);//
-bool erase_where(subforwardlist ** sfl2, unsigned int where);//
-unsigned int size(subforwardlist ** sfl2);//
-void clear(subforwardlist ** sfl2);
-//End
-subforwardlist * motion(subforwardlist * sfl){
-    return sfl->next;
-}
-
-bool init(subforwardlist ** sfl2){
-    *sfl2 = nullptr;
+sublist::sublist(){
+    first = new subforwardlist*;
+    *first = nullptr;
     cout << "INIT SUCCESS" << endl;
-    return 0;
 }
 
-bool push_back(subforwardlist ** sfl2, int d){
-    subforwardlist * sfl = *sfl2;
-    if(*sfl2 == nullptr){
+bool sublist::push_back(int d){
+    subforwardlist * sfl = *first;
+    if(*first == nullptr){
         sfl = new subforwardlist;
         sfl->data = d;
         sfl->next = nullptr;
-        *sfl2 = sfl;
+        *first = sfl;
         return 1;
     }
     subforwardlist * a = sfl;
@@ -48,16 +49,16 @@ bool push_back(subforwardlist ** sfl2, int d){
     return 1;
 }
 
-int pop_back(subforwardlist ** sfl2){
-    subforwardlist * sfl = *sfl2;
-    if(*sfl2 == nullptr){
+int sublist::pop_back(){
+    subforwardlist * sfl = *first;
+    if(*first == nullptr){
         cout << endl << "ERROR: EMPTY LIST CANNOT POP_BACK" << endl;
         return 1;
     }
     if(sfl->next == nullptr){
         int r = sfl->data;
-        delete *sfl2;
-        *sfl2 = nullptr;
+        delete *first;
+        *first = nullptr;
         return r;
     }
     subforwardlist * a = sfl;
@@ -72,54 +73,54 @@ int pop_back(subforwardlist ** sfl2){
     return etr;
 }
 
-bool push_forward(subforwardlist ** sfl, int d){
-    subforwardlist * oldone = *sfl;
+bool sublist::push_forward(int d){
+    subforwardlist * oldone = *first;
     if(oldone == nullptr){
         oldone = new subforwardlist;
         oldone->data = d;
         oldone->next = nullptr;
-        *sfl = oldone;
+        *first = oldone;
         return 1;
     }
     subforwardlist * newone = new subforwardlist;
     newone->data = d;
-    newone->next = *sfl;
-    *sfl = newone;
+    newone->next = *first;
+    *first = newone;
     return 1;
 }
 
-int pop_forward(subforwardlist ** sfl){
-    subforwardlist * oldone = *sfl;
-    if(*sfl == nullptr){
+int sublist::pop_forward(){
+    subforwardlist * oldone = *first;
+    if(*first == nullptr){
         cout << endl << "ERROR: EMPTY LIST CANNOT POP_FORWARD" << endl;
         return 0;
     }
     if(oldone->next == nullptr){
         int r = oldone->data;
         delete oldone;
-        *sfl = nullptr;
+        *first = nullptr;
         return r;
     }
     subforwardlist * newstart = oldone->next;
     int output = oldone->data;
-    *sfl = newstart;
+    *first = newstart;
     delete oldone;
     return output;
 }
 
-bool push_where(subforwardlist ** sfl2, unsigned int where, int d){
-    subforwardlist * start = *sfl2;
+bool sublist::push_where(unsigned int where, int d){
+    subforwardlist * start = *first;
     if(start == nullptr && where != 0){
         cout << endl << "WARNING: EMPTY LIST, VALUE HAS BEEN PUT IN THE FIRST PLACE" << endl;
-        push_back(sfl2, d);
+        push_back(d);
         return 0;
     }
     if(start == nullptr && where == 0){
-        push_back(sfl2, d);
+        push_back(d);
         return 0;
     }
     if(where == 0){
-        push_forward(sfl2, d);
+        push_forward(d);
         return 1;
     }
     for(int i = 0; i != where-1; i++){
@@ -128,7 +129,7 @@ bool push_where(subforwardlist ** sfl2, unsigned int where, int d){
         }
         else{
             cout << endl << "WARNING: REACHED THE END OF THE LIST, VALUE HAS BEEN PUT IN THE " << i+1 << " PLACE" << endl;
-            push_back(&start, d);
+            push_back(d);
             return 0;
         }
     }
@@ -140,10 +141,10 @@ bool push_where(subforwardlist ** sfl2, unsigned int where, int d){
     return 1;
 }
 
-bool erase_where(subforwardlist ** sfl2, unsigned int where){
-    subforwardlist * impostor = *sfl2;
-    subforwardlist * novice = *sfl2;
-    subforwardlist * sfl = *sfl2;
+bool sublist::erase_where(unsigned int where){
+    subforwardlist * impostor = *first;
+    subforwardlist * novice = *first;
+    subforwardlist * sfl = *first;
     if(sfl == nullptr){
         cout << "ERROR: EMPTY LIST" << endl;
         return 0;
@@ -157,7 +158,7 @@ bool erase_where(subforwardlist ** sfl2, unsigned int where){
         return 1;
     }
     if(where == 0){
-        pop_forward(sfl2);
+        pop_forward();
         return 1;
     }
     for(int i = 0; i != where; i++){
@@ -177,8 +178,8 @@ bool erase_where(subforwardlist ** sfl2, unsigned int where){
     return 1;
 }
 
-unsigned int size(subforwardlist ** sfl2){
-    subforwardlist * sfl = *sfl2;
+unsigned int sublist::size(){
+    subforwardlist * sfl = *first;
     int i = 1;
     subforwardlist * a = sfl;
     if(a == nullptr){
@@ -191,12 +192,16 @@ unsigned int size(subforwardlist ** sfl2){
     return i;
 }
 
-void clear(subforwardlist ** sfl2){
-    subforwardlist * sfl = *sfl2;
-    unsigned int d = size(&sfl);
+void sublist::clear(){
+    subforwardlist * sfl = *first;
+    unsigned int d = size();
     for(int i = 0; i < d; i++){
-        pop_back(&sfl);
+        pop_back();
     }
     //delete *sfl2;
-    *sfl2 = nullptr;
+    *first = nullptr;
+}
+
+sublist::~sublist(){
+    delete first;
 }
